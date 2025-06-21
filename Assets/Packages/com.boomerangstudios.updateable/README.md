@@ -1,98 +1,40 @@
 # 🔁 Boomerang Updateable System
 
-A modular, performant, and flexible update system for Unity, designed to replace the overhead of `MonoBehaviour.Update()` with centralized, safe, and priority-based update management.
+A modular and centralized alternative to Unity’s default `MonoBehaviour` update flow — lightweight, performant, and easy to integrate.
 
-> Lightweight. Safe. ECS-inspired.
-
----
-
-## 🚀 Features
-
-- Supports `Update`, `FixedUpdate`, and `LateUpdate`
-- Priority-based execution
-- Safe registration & unregistration
-- Conditional updates for performance
-- Profiler/debug integration
-- Clean UPM structure for reuse
-- Auto-registration in editor (optional)
+> ✨ Use this to control **per-frame updates** (Update, FixedUpdate, LateUpdate) from a single manager with optional toggles and prioritization.
 
 ---
 
-## 📦 Installation
+## 📦 Features
 
-### Option 1: Unity Package Manager via Git
-Add this to your project's `manifest.json`:
-```json
-"com.boomerangstudios.updateable": "https://github.com/Boomerang-Studios/Updateable.git?path=Packages/com.boomerangstudios.updateable"
-```
-
-### Option 2: Local Import
-1. Clone/download this repo.
-2. Move the `Packages/com.boomerangstudios.updateable/` folder into your Unity project's `Packages/`.
+- ✅ Centralized update control via `UpdateManager`
+- ✅ Interfaces: `IUpdateable`, `IFixedUpdateable`, `ILateUpdateable`
+- ✅ Boolean-based `CanUpdate`, `CanFixedUpdate`, `CanLateUpdate`
+- ✅ Safe static registration / deregistration
+- ✅ Avoids duplicate registration or stale calls
+- ✅ Lightweight and compatible with all Unity versions
+- ✅ Ideal for gameplay, AI, systems, UI, and effects
 
 ---
 
-## 🛠 Usage
+## 🧩 Interfaces
 
-### 1. Create an updateable class:
 ```csharp
-public class EnemyAI : MonoBehaviour, IUpdateable
+public interface IUpdateable
 {
-    public void OnUpdate()
-    {
-        Debug.Log("Enemy updated!");
-    }
-
-    void OnEnable() => UpdateManager.Instance.Register(this);
-    void OnDisable() => UpdateManager.Instance.Unregister(this);
+    bool CanUpdate { get; }
+    void OnUpdate(float deltaTime);
 }
-```
 
-### 2. Optional Priority:
-```csharp
-public class InputHandler : MonoBehaviour, IUpdateable, IPrioritized
+public interface IFixedUpdateable
 {
-    public int Priority => -100; // Runs before everything else
-    public void OnUpdate() { /* handle input */ }
+    bool CanFixedUpdate { get; }
+    void OnFixedUpdate();
 }
-```
 
-### 3. Conditional Updating:
-```csharp
-public class UIUpdater : MonoBehaviour, IConditionalUpdateable
+public interface ILateUpdateable
 {
-    public bool ShouldUpdate => isVisible;
-    public void OnUpdate() { /* update UI */ }
+    bool CanLateUpdate { get; }
+    void OnLateUpdate();
 }
-```
-
----
-
-## 📚 API Overview
-
-| Interface                  | Purpose                             |
-|----------------------------|-------------------------------------|
-| `IUpdateable`              | Called every `Update()`             |
-| `IFixedUpdateable`         | Called every `FixedUpdate()`        |
-| `ILateUpdateable`          | Called every `LateUpdate()`         |
-| `IPrioritized`             | Adds priority order to execution    |
-| `IConditionalUpdateable`   | Skip update if condition false      |
-
----
-
-## 🧪 Sample Included
-
-See `Demo/` folder for a plug-and-play example.
-
----
-
-## 📄 License
-
-This package is open-sourced under the [MIT License](./LICENSE).
-
----
-
-## ✨ Created by
-
-**[Satvik Nagpal](https://github.com/satviknagpal01)**  
-Boomerang Studios
